@@ -27,12 +27,39 @@ async def handle_payos_webhook(request: Request):
             
             # Vì lúc này Webhook và Bot chung 1 nhà, ta có thể gọi thẳng bot.send_message
             if order_code in pending_orders:
-                user_id = pending_orders[order_code]
+                order_info = pending_orders[order_code]
+                user_id = order_info["user_id"]
+                items = order_info["items"]
+                total = order_info["total_amount"]
                 
-                # GỬI TIN NHẮN TỨC THÌ KHÔNG CẦN CHỜ ĐỢI
                 await bot.send_message(
                     chat_id=user_id,
                     text=f"🎉 **Ting ting!** Quán đã nhận được {amount:,} VNĐ.\nMã đơn `{order_code}` của bạn đang được pha chế nhé!",
+                    parse_mode="Markdown"
+                )
+
+                kitchen_ticket = f"🔔 **PHIẾU BẾP - ĐƠN {order_code}** 🔔\n"
+                kitchen_ticket += "---------------------------\n"
+                for idx, item in enumerate(items, 1):
+                    item_id = item.get("item_id", "Unknown")
+                    size = item.get("size", "M")
+                    qty = item.get("quantity", 1)
+                    note = item.get("note", "Không có")
+                    
+                    kitchen_ticket += f"{idx}. Mã: {item_id} | Size: {size} | SL: {qty}\n"
+                    if note != "none" and note != "":
+                        kitchen_ticket += f"   📝 Ghi chú: {note}\n"
+                
+                kitchen_ticket += "---------------------------\n"
+                kitchen_ticket += f"Khách hàng (Telegram ID): `{user_id}`\n"
+                kitchen_ticket += "Trạng thái: ĐÃ THANH TOÁN ✅\n\n"
+                
+                kitchen_ticket += "_(💡 Ghi chú của Dev: Trong thực tế, phiếu này sẽ được tự động gửi vào một Group Telegram riêng của nhân viên pha chế. Nhưng để test, hệ thống sẽ gửi thẳng phiếu này lại cho bạn để demo nhé!)_"
+                
+                # Gửi phiếu bếp này thẳng cho người order (user_id) để họ thấy được luồng dữ liệu
+                await bot.send_message(
+                    chat_id=user_id,
+                    text=kitchen_ticket,
                     parse_mode="Markdown"
                 )
                 del pending_orders[order_code] # Gạch tên khỏi sổ

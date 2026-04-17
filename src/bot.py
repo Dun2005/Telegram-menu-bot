@@ -70,7 +70,6 @@ async def handle_chat(message: types.Message):
         user_sessions[user_id].append({"role": "assistant", "content": ai_reply})
         await message.answer(ai_reply)
 
-        # --- GỌI THANH TOÁN (ĐÃ XÓA HARDCODE) ---
         # 1. Lấy danh sách các món khách gọi
         items_list = order_data.get("items", []) 
         
@@ -90,7 +89,11 @@ async def handle_chat(message: types.Message):
             order_code = payment_info["order_code"]
             
             # GHI VÀO SỔ TAY: Mã đơn này là của người khách này
-            pending_orders[order_code] = user_id
+            pending_orders[order_code] = {
+                "user_id": user_id,
+                "items": items_list,  # Danh sách món AI đã bóc tách
+                "total_amount": total_amount
+            }
 
             bill_text = f"💰 **Tổng bill của bạn là: {total_amount:,} VNĐ**\n\n"
             bill_text += "Bạn click vào link dưới đây để lấy mã QR thanh toán nhé (Link có hạn trong 15 phút):\n"
