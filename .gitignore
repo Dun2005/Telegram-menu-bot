@@ -1,0 +1,51 @@
+# ========================
+# Cấu hình Môi trường & Bảo mật
+# ========================
+# TUYỆT ĐỐI KHÔNG commit file chứa API keys
+.env
+
+# Bỏ qua các thư mục môi trường ảo (Virtual Environments)
+.venv/
+venv/
+env/
+ENV/
+
+# ========================
+# Python
+# ========================
+# Bỏ qua các file cache do Python tự sinh ra
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# ========================
+# Logs & Databases
+# ========================
+*.log
+# Bỏ qua file database cục bộ nếu sau này bạn dùng SQLite thay cho Dictionary
+*.sqlite3
+*.db
+
+# ========================
+# IDE & Text Editors
+# ========================
+# Bỏ qua cấu hình cá nhân của các trình soạn thảo code
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ========================
+# Hệ điều hành (OS)
+# ========================
+# Mac OS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
