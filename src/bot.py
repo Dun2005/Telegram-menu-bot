@@ -107,7 +107,7 @@ async def handle_chat(message: types.Message):
         user_sessions[user_id].append({"role": "assistant", "content": ai_reply})
         
         # Gửi ảnh menu
-        photo = FSInputFile("../menu_image.png")
+        photo = FSInputFile("menu_image.png")
         await message.answer_photo(photo=photo, caption=ai_reply)
     elif response["status"] == "cancel":
         user_sessions[user_id] = [] # Reset giỏ hàng
