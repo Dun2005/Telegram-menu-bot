@@ -5,8 +5,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
 
 # Tạm gọi các biến từ file bot.py của bạn
-from bot import bot, dp, pending_orders 
-from payment import payos_client
+from src.bot import bot, dp, pending_orders 
+from src.payment import payos_client
 
 # 1. Khởi tạo FastAPI
 app = FastAPI()

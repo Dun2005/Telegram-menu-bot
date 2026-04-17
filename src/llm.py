@@ -1,14 +1,14 @@
 import json
 from openai import AsyncOpenAI
 from config import OPENAI_API_KEY
-from parser import load_menu
+from src.parser import load_menu
 import openai
 
 # Khởi tạo client OpenAI (Dùng Async vì bot Telegram chạy bất đồng bộ)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 # Load menu 1 lần khi khởi động để nhét vào prompt
-MENU_JSON = load_menu('../menu.csv')
+MENU_JSON = load_menu('menu.csv')
 
 SYSTEM_PROMPT = f"""
 Bạn là AI Assistant hỗ trợ đặt món của một quán trà sữa. 

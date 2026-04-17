@@ -2,10 +2,10 @@ import os
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from config import TELEGRAM_TOKEN
-from llm import chat_with_ai
-from payment import create_payment_link
+from src.llm import chat_with_ai
+from src.payment import create_payment_link
 from aiogram.types import FSInputFile, ReplyKeyboardMarkup, KeyboardButton
-from order import calculate_total_amount
+from src.order import calculate_total_amount
 
 bot = Bot(token=TELEGRAM_TOKEN)
 dp = Dispatcher()
@@ -75,7 +75,7 @@ async def handle_chat(message: types.Message):
         items_list = order_data.get("items", []) 
         
         # 2. Truyền vào hàm để tra giá trong file CSV
-        total_amount = calculate_total_amount(items_list, menu_file='../menu.csv')
+        total_amount = calculate_total_amount(items_list, menu_file='menu.csv')
         
         # 3. Bắt lỗi nếu tính tiền thất bại (tổng = 0)
         if total_amount == 0:

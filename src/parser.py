@@ -1,4 +1,3 @@
-from ast import Try
 import pandas as pd
 import json
 
@@ -21,7 +20,7 @@ def load_menu(file_path: str = 'menu.csv') -> str:
 
 if __name__ == "__main__":
     try:
-        menu_json = load_menu('../Menu.csv')
+        menu_json = load_menu('menu.csv')
         print("✅ Đọc menu thành công! Dưới đây là dữ liệu sẽ nhồi cho AI:\n")
         print(menu_json[:600] + "\n\n... [Đã cắt bớt phần dưới để dễ nhìn] ...")
     except FileNotFoundError:
