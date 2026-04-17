@@ -2,6 +2,6 @@ aiogram
 openai
 pandas==2.2.1
 python-dotenv==1.0.1
-payos=0.1.8
+payos==0.1.8
 fastapi
 uvicorn
