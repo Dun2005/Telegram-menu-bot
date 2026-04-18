@@ -21,6 +21,14 @@ Nhiệm vụ của bạn:
 4. Xác nhận lại toàn bộ danh sách món và tổng tiền trước khi chốt đơn.
 5. Khi khách đã đồng ý chốt đơn, BẮT BUỘC HÃY GỌI HÀM `checkout_order` để hệ thống xử lý thanh toán.
 
+*** QUY TẮC QUAN TRỌNG VỀ TOPPING VÀ MÓN CHÍNH ***
+Trong thực đơn, có sự trùng lặp từ khóa giữa món chính (Ví dụ: "Trà Sữa Trân Châu Đen" - Mã TS02) và topping (Ví dụ: "Trân Châu Đen" - Mã TP01). Hãy phân tích kỹ ngữ cảnh câu nói của khách:
+
+1. NẾU khách gọi trực tiếp tên món: "Cho 1 trà sữa trân châu đen" -> Đây là MÓN CHÍNH (TS02). Tuyệt đối không tách thành Trà sữa + Topping trân châu.
+2. NẾU khách dùng các từ "thêm", "cùng với", "bỏ thêm" vào một món nước khác: "Cho 1 Trà Olong thêm trân châu đen" -> Lúc này Trân Châu Đen đóng vai trò là TOPPING (TP01), phải được đặt vào mảng `toppings` bên trong món Trà Olong.
+3. KHÔNG BAO GIỜ để một mã Topping (TP...) đứng đơn độc như một món chính. Topping luôn phải nằm bên trong một món nước.
+
+Tuyệt đối không tự cộng nhẩm tổng tiền trong lúc chat. Nhiệm vụ của bạn chỉ là liệt kê các món khách đặt. Tổng tiền sẽ do hệ thống tự động tính.
 --- MENU QUÁN ---
 {MENU_JSON}
 --- KẾT THÚC MENU ---
@@ -28,32 +36,67 @@ Nhiệm vụ của bạn:
 
 TOOLS = [
     {
-        "type": "function",
-        "function": {
-            "name": "checkout_order",
-            "description": "Gọi hàm này khi khách hàng xác nhận chốt đơn để tính tiền.",
-            "parameters": {
-                "type": "object",
-                "properties": {
+    "type": "function",
+    "function": {
+        "name": "checkout_order",
+        "description": "Gọi hàm này khi khách hàng xác nhận chốt đơn để tính tiền.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "description": "Danh sách các món chính khách đặt",
                     "items": {
-                        "type": "array",
-                        "description": "Danh sách các món khách đặt",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "item_id": {"type": "string", "description": "Mã món (VD: TS01)"},
-                                "quantity": {"type": "integer"},
-                                "size": {"type": "string", "enum": ["M", "L", "none"], "description": "Size M hoặc L. Topping thì để none"},
-                                "note": {"type": "string", "description": "Ghi chú (ít đá, ít đường...)"}
+                        "type": "object",
+                        "properties": {
+                            "item_id": {
+                                "type": "string", 
+                                "description": "Mã món (VD: TS01)"
                             },
-                            "required": ["item_id", "quantity", "size"]
-                        }
+                            "quantity": {
+                                "type": "integer"
+                            },
+                            "size": {
+                                "type": "string", 
+                                "enum": ["M", "L", "none"], 
+                                "description": "Size M hoặc L."
+                            },
+                            "note": {
+                                "type": "string", 
+                                "description": "Ghi chú (ít đá, ít đường...)"
+                            },
+                            "toppings": {
+                                "type": "array",
+                                "description": "Danh sách các topping đi kèm kẹp bên trong món nước này (nếu khách có gọi)",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "item_id": {
+                                            "type": "string", 
+                                            "description": "Mã topping (VD: TP01)"
+                                        },
+                                        "quantity": {
+                                            "type": "integer",
+                                            "description": "Số lượng phần topping"
+                                        },
+                                        "size": {
+                                            "type": "string", 
+                                            "enum": ["M", "L", "none"],
+                                            "description": "Size của topping, thường để none"
+                                        }
+                                    },
+                                    "required": ["item_id", "quantity"]
+                                }
+                            }
+                        },
+                        "required": ["item_id", "quantity", "size"]
                     }
-                },
-                "required": ["items"]
-            }
+                }
+            },
+            "required": ["items"]
         }
-    },
+    }
+},
     {
         "type": "function",
         "function": {
