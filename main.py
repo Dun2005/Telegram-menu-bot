@@ -38,6 +38,7 @@ async def handle_payos_webhook(request: Request):
                     parse_mode="Markdown"
                 )
 
+                # --- 2. TỔNG HỢP THÔNG TIN LÀM MÓN VÀ GIAO HÀNG ---
                 kitchen_ticket = f"🔔 **PHIẾU BẾP - ĐƠN {order_code}** 🔔\n"
                 kitchen_ticket += "---------------------------\n"
                 for idx, item in enumerate(items, 1):
@@ -46,7 +47,19 @@ async def handle_payos_webhook(request: Request):
                     qty = item.get("quantity", 1)
                     note = item.get("note", "Không có")
                     
+                    # In món chính
                     kitchen_ticket += f"{idx}. Mã: {item_id} | Size: {size} | SL: {qty}\n"
+                    
+                    # --- THÊM KHÚC NÀY ĐỂ IN TOPPING ---
+                    toppings = item.get("toppings", [])
+                    if toppings:
+                        for t in toppings:
+                            t_id = t.get("item_id")
+                            t_qty = t.get("quantity", 1)
+                            kitchen_ticket += f"   ➕ Topping: Mã {t_id} (SL: {t_qty})\n"
+                    # -----------------------------------
+                            
+                    # In ghi chú
                     if note != "none" and note != "":
                         kitchen_ticket += f"   📝 Ghi chú: {note}\n"
                 
