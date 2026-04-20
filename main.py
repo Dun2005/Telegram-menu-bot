@@ -82,6 +82,13 @@ async def handle_payos_webhook(request: Request):
         print(f"❌ Lỗi xử lý Webhook: {e}")
         return {"success": False}
 
+@app.get("/")
+async def root():
+    return {"message": "Bot is running mượt mà!", "status": "ok"}
+
+@app.head("/")
+async def root_head():
+    return {"status": "ok"}
 
 async def setup_bot_commands():
     commands = [
